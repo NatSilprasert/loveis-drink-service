@@ -7,11 +7,8 @@ import React from 'react'
 const Home = () => {
   return (
     <>
-      <Navbar/>
-      <div>
-        <Hero/>
-        <Product/>
-      </div>
+      <Hero/>
+      <Product/>
       <Footer/>
     </>
   )

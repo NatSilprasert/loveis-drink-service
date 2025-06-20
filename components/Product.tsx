@@ -2,8 +2,13 @@
 
 import React, { useState } from 'react'
 import ProductCard from './ProductCard';
+import { useAppContext } from '@/context/AppContext';
 
 const Product = () => {
+
+    const product = {
+        _id: 1
+    }
 
     const [activeCategory, setActiveCategory] = useState('bestseller');
 
@@ -33,6 +38,7 @@ const Product = () => {
                     <ProductCard/>
                 </section>
             </div>
+            <hr className='mt-16 text-gray-400/50'/>
         </div>
     )
 }

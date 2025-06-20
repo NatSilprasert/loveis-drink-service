@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { AppContextProvider } from "@/context/AppContext";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Drink | The Coming of Stages",
@@ -21,6 +23,7 @@ export default function RootLayout({
         <body>
           <Toaster />
           <AppContextProvider>
+            <Navbar/>
             {children}
           </AppContextProvider>
         </body>
