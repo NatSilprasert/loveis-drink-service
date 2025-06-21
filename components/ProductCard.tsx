@@ -5,7 +5,7 @@ import React from 'react'
 const ProductCard = () => {
 
   const product = {
-    _id: 1
+    _id: '1'
   }
 
   const { router } = useAppContext();

@@ -6,14 +6,25 @@ import { ArrowLeft, Check, SquareMinus, SquarePlus } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation'
 import React, { useState } from 'react'
+import { Drink } from '@/context/AppContext';
 
 const ProductItem = () => {
 
     const { id } = useParams();
-    const { router } = useAppContext();
+    const { router, addToCart } = useAppContext();
+
     const [option, setOption] = useState<string>('');
     const [addon, setAddon] = useState<string[]>([]);
+    const [request, setRequest] = useState<string>("");
     const [quantity, setQuantity] = useState<number>(1);
+
+    const drink: Drink = {
+        _id: typeof id === "string" ? id : "",
+        option,
+        addon,
+        request,
+        quantity
+    }
 
     const increase = () => {
         setQuantity((prev) => prev + 1);
@@ -147,6 +158,8 @@ const ProductItem = () => {
                     name="request" 
                     id="request"
                     placeholder='ส่งข้อความถึงร้านค้า'
+                    value={request}
+                    onChange={e => setRequest(e.target.value)}
                 >
                 </textarea>
             </section>
@@ -159,7 +172,7 @@ const ProductItem = () => {
                     <p className='font-medium'>{quantity}</p>
                     <SquarePlus onClick={() => increase()} className='text-black/80 w-8 h-8' />
                 </div>
-                <div className='md:max-w-1/3 flex flex-1 justify-between p-4 bg-primary text-white font-medium rounded-lg'>
+                <div onClick={() => addToCart(drink)} className='md:max-w-1/3 flex flex-1 justify-between p-4 bg-primary text-white font-medium rounded-lg'>
                     <p>เพิ่มลงตะกร้า</p>
                     <p>฿{quantity * 100}</p>
                 </div>
