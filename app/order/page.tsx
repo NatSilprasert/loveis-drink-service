@@ -1,5 +1,6 @@
 "use client"
 
+import Navbar from '@/components/Navbar'
 import { useAppContext } from '@/context/AppContext'
 import { ArrowLeft } from 'lucide-react'
 import React from 'react'
@@ -10,6 +11,7 @@ const Order = () => {
 
   return (
     <div>
+      <Navbar/>
       <section className='px-4 md:px-8'>
         <div className='h-18 w-full'></div>
         <div onClick={() => router.push('/')} className='flex gap-1 mb-4'>

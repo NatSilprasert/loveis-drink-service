@@ -44,6 +44,7 @@ const ProductItem = () => {
 
     return (
         <div>
+            <Navbar/>
             <div className='h-18 w-full'></div>
             <ArrowLeft onClick={() => router.push('/')} className='absolute mx-2 mt-2 text-white'/>
             <Image 
