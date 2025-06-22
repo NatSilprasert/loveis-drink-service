@@ -18,7 +18,7 @@ const Add = () => {
         <div className='w-full'>
             <Navbar/>
             <Sidebar/>
-            Add
+            Add...
         </div>
     )
 }
