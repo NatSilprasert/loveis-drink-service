@@ -14,6 +14,7 @@ const ProductItem = () => {
     const { router, addToCart } = useAppContext();
 
     const [option, setOption] = useState<string>('');
+    const [selectedTime, setSelectedTime] = useState<string>('ก่อนเริ่มการแสดง');
     const [addon, setAddon] = useState<string[]>([]);
     const [request, setRequest] = useState<string>("");
     const [quantity, setQuantity] = useState<number>(1);
@@ -21,6 +22,7 @@ const ProductItem = () => {
     const drink: Drink = {
         _id: typeof id === "string" ? id : "",
         option,
+        selectedTime,
         addon,
         request,
         quantity
@@ -67,7 +69,7 @@ const ProductItem = () => {
                 <hr className='mt-4 text-gray-400/50'/>
 
                 <div className='flex flex-col gap-3 mt-4 px-4 md:px-8'>
-                    <p className='text-xl font-semibold'>Option</p>
+                    <p className='text-xl font-semibold'>ตัวเลือก</p>
                     <div className='ml-1 flex items-center gap-2 text-gray-600'> 
                         <div onClick={() => setOption('hot')} className={`${option === 'hot' ? 'border-7 border-primary' : 'border-2'} w-5 h-5 rounded-full border-gray-300`}></div>
                         <p>ร้อน</p>
@@ -77,12 +79,24 @@ const ProductItem = () => {
                         <p>เย็น</p>
                     </div>
                 </div>
+                <hr className='mt-4 text-gray-400/50'/>
 
+                <section className='flex flex-col gap-3 mt-4 px-4 md:px-8'>
+                    <p className='text-xl font-semibold'>เวลาที่ต้องการเครื่องดื่ม</p>
+                    <div className='ml-1 flex items-center gap-2 text-gray-600'> 
+                        <div onClick={() => setSelectedTime('ก่อนเริ่มการแสดง')} className={`${selectedTime === 'ก่อนเริ่มการแสดง' ? 'border-7 border-primary' : 'border-2'} w-5 h-5 rounded-full border-gray-300`}></div>
+                        <p>ก่อนเริ่มการแสดง</p>
+                    </div>
+                    <div className='ml-1 flex items-center gap-2 text-gray-600'>
+                        <div onClick={() => setSelectedTime('ช่วงพักเบรกระหว่างองก์')} className={`${selectedTime === 'ช่วงพักเบรกระหว่างองก์' ? 'border-7 border-primary' : 'border-2'} w-5 h-5 rounded-full border-gray-300`}></div>
+                        <p>ช่วงพักเบรกระหว่างองก์</p>
+                    </div>
+                </section>
                 <hr className='mt-4 text-gray-400/50'/>
 
                 <div className='flex flex-col gap-3 mt-4 px-4 md:px-8'>
                     <div className='flex justify-between'>
-                        <p className='text-xl font-semibold'>Add On</p>
+                        <p className='text-xl font-semibold'> ตัวเลือกเพิ่มเติม</p>
                         <p className='text-gray-400'>optional</p>
                     </div>
                     <div className='ml-1 flex justify-between text-gray-600'>  
@@ -151,7 +165,7 @@ const ProductItem = () => {
 
             <section className='p-4'>
                 <div className='flex justify-between'>
-                    <p className='text-xl font-semibold'>Additional Request</p>
+                    <p className='text-xl font-semibold'>หมายเหตุถึงร้านค้า</p>
                     <p className='text-gray-400'>optional</p>
                 </div>
                 <textarea 

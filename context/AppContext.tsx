@@ -1,5 +1,6 @@
 'use client'
 
+import axios from "axios";
 import { useRouter, useRouter as UseRouterType } from "next/navigation";
 import { createContext, useContext, ReactNode, useState } from "react";
 import toast from "react-hot-toast";
@@ -9,6 +10,10 @@ import toast from "react-hot-toast";
 interface AppContextType {
     router: ReturnType<typeof useRouter>;
     products: Product[];
+    login: Login;
+    setLogin: React.Dispatch<React.SetStateAction<Login>>;
+    showLogin: boolean;
+    setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
     addToCart: (drink: Drink) => void;
     getCartCount: () => number;
     cartItems:  Drink[];
@@ -19,12 +24,9 @@ interface AppContextProviderProps {
     children: ReactNode;
 }
 
-export interface Drink {
-    _id: string;
-    option: string;
-    addon: string[];
-    request: string;
-    quantity: number;
+export interface Login {
+    seat: string;
+    round: string;
 }
 
 export interface Product {
@@ -35,6 +37,22 @@ export interface Product {
     option: string[];
     addon: string[];
 }
+export interface Drink {
+    _id: string;
+    option: string;
+    selectedTime: string;
+    addon: string[];
+    request: string;
+    quantity: number;
+}
+
+export interface Order {
+    _id: string;
+    seat: string;
+    round: string;
+    drink: Drink[];
+}
+
 
 // Function
 
@@ -52,9 +70,40 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     
     const router = useRouter();
 
+    const [login, setLogin] = useState<Login>({seat: 'guess', round: 'กรอกที่นั่ง'});
+    const [showLogin, setShowLogin] = useState<boolean>(true);
     const [products, setProducts] = useState<Product[]>([]);
-    const [userData, setUserData] = useState(false);
     const [cartItems, setCartItems] = useState<Drink[]>([]);
+    const [orderItems, setOrderItems] = useState<Order[]>([]);
+
+    // Fetch Data
+
+    const fetchProductData = async () => {
+        
+    }
+
+    const fetchUserData = async () => {
+
+        try {
+
+            const response = await axios.post('/api/cart/get', { seat: login.seat, round: login.round });
+
+            if (response.data.success) {
+              
+                const { cartData, orderData } = response.data;
+                setCartItems(cartData)
+                setOrderItems(orderItems)
+
+            }
+            
+        } catch (error: any) {
+            console.log(error)
+            toast.error(error.message)
+        }
+
+    }
+
+    // Cart Function
 
     const addToCart = (drink: Drink) => { 
 
@@ -89,6 +138,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
     const value: AppContextType = {
         router, products, 
+        login, setLogin, showLogin, setShowLogin,
         addToCart, getCartCount, cartItems, setCartItems
     };
 

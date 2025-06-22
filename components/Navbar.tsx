@@ -6,12 +6,14 @@ import React from 'react'
 
 const Navbar = () => {
 
-    const { router } = useAppContext();
+    const { router, showLogin, setShowLogin, login } = useAppContext();
 
     return (   
         <div className='absolute w-full flex justify-between px-4 md:px-8 py-4 z-10'>
-            <div className='bg-white border border-gray-400 px-3 py-2 rounded-xl'>
-                <p>ที่นั่ง A01 | คุณ ณัฏฐ์</p>
+            <div onClick={() => setShowLogin(true)} className='bg-white border border-gray-400 px-3 py-2 rounded-xl'>
+                <p>
+                    {`${login.seat} | ${login.round}`}
+                </p>
             </div>
 
             <div className='flex gap-3'>
