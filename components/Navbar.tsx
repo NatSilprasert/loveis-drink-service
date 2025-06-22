@@ -2,15 +2,23 @@
 
 import { useAppContext } from '@/context/AppContext'
 import { GlassWater, ReceiptText, ShoppingCart } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 import React from 'react'
 
 const Navbar = () => {
 
     const { router, showLogin, setShowLogin, login } = useAppContext();
+    const pathname = usePathname();
+
+    const handleClick = () => {
+        if (pathname === '/') {
+            setShowLogin(true);
+        }
+    };
 
     return (   
         <div className='absolute w-full flex justify-between px-4 md:px-8 py-4 z-10'>
-            <div onClick={() => setShowLogin(true)} className='bg-white border border-gray-400 px-3 py-2 rounded-xl'>
+            <div onClick={handleClick} className='bg-white border border-gray-400 px-3 py-2 rounded-xl'>
                 <p>
                     {`${login.seat} | ${login.round}`}
                 </p>

@@ -4,7 +4,6 @@ import { Toaster } from "react-hot-toast";
 import { AppContextProvider } from "@/context/AppContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Login from "@/components/Login";
 
 export const metadata: Metadata = {
   title: "Drink | The Coming of Stages",
@@ -20,7 +19,6 @@ export default function RootLayout({ children }: Readonly<{children: React.React
         <body>
           <Toaster />
           <AppContextProvider>
-            <Login/>
             {children}
           </AppContextProvider>
         </body>

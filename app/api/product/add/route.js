@@ -18,6 +18,7 @@ export async function POST(request) {
         const description = formData.get('description');
         const price = formData.get('price');
         const option = formData.get('option');
+        const category = formData.get('category');
         const image = formData.get('image'); // image เป็น Blob
 
         // แปลง Blob เป็น Buffer
@@ -41,6 +42,7 @@ export async function POST(request) {
             description,
             price: Number(price),
             imageUrl: uploadResult.secure_url,
+            category,
             option: JSON.parse(option)
         })
 

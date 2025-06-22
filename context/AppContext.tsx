@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { useRouter, useRouter as UseRouterType } from "next/navigation";
-import { createContext, useContext, ReactNode, useState } from "react";
+import { createContext, useContext, ReactNode, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
 // Define the context type
@@ -18,6 +18,8 @@ interface AppContextType {
     getCartCount: () => number;
     cartItems:  Drink[];
     setCartItems: React.Dispatch<React.SetStateAction<Drink[]>>;
+    adminToken: string;
+    setAdminToken: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface AppContextProviderProps {
@@ -70,16 +72,29 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     
     const router = useRouter();
 
+    const [adminToken, setAdminToken] = useState<string>('');
     const [login, setLogin] = useState<Login>({seat: 'guess', round: 'กรอกที่นั่ง'});
     const [showLogin, setShowLogin] = useState<boolean>(true);
     const [products, setProducts] = useState<Product[]>([]);
     const [cartItems, setCartItems] = useState<Drink[]>([]);
     const [orderItems, setOrderItems] = useState<Order[]>([]);
 
+    // Admin Token
+    useEffect(() => {
+        const token = localStorage.getItem('adminToken');
+        if (token) {
+            setAdminToken(token);
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('adminToken', adminToken);
+    }, [adminToken]);
+
     // Fetch Data
 
     const fetchProductData = async () => {
-        
+
     }
 
     const fetchUserData = async () => {
@@ -92,7 +107,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
               
                 const { cartData, orderData } = response.data;
                 setCartItems(cartData)
-                setOrderItems(orderItems)
+                setOrderItems(orderData)
 
             }
             
@@ -137,7 +152,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     }
 
     const value: AppContextType = {
-        router, products, 
+        router, products, adminToken, setAdminToken,
         login, setLogin, showLogin, setShowLogin,
         addToCart, getCartCount, cartItems, setCartItems
     };

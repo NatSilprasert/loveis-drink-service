@@ -5,6 +5,9 @@ import loveis from './loveis.jpg'
 import tiktok from './tt1.png'
 import facebook from './fb1.png'
 import instagram from './ig1.png'
+import add_icon from './add_icon.svg'
+import order_icon from './order_icon.svg'
+import product_list_icon from './product_list_icon.svg'
 
 export const assets = {
     coffee,
@@ -14,5 +17,8 @@ export const assets = {
     tcos,
     tcospng,
     loveis,
+    add_icon,
+    order_icon,
+    product_list_icon
 }
 
