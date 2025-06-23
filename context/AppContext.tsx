@@ -14,6 +14,8 @@ interface AppContextType {
     setLogin: React.Dispatch<React.SetStateAction<Login>>;
     showLogin: boolean;
     setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
+    openEdit: string;
+    setOpenEdit: React.Dispatch<React.SetStateAction<string>>;
     addToCart: (drink: Drink) => void;
     getCartCount: () => number;
     cartItems:  Drink[];
@@ -72,7 +74,10 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     
     const router = useRouter();
 
+    // Admin
     const [adminToken, setAdminToken] = useState<string>('');
+    const [openEdit, setOpenEdit] = useState<string>('');
+
     const [login, setLogin] = useState<Login>({seat: 'guess', round: 'กรอกที่นั่ง'});
     const [showLogin, setShowLogin] = useState<boolean>(true);
     const [products, setProducts] = useState<Product[]>([]);
@@ -93,7 +98,26 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
     // Fetch Data
 
+    useEffect(() => {
+        fetchProductData();
+    },[openEdit])
+
     const fetchProductData = async () => {
+
+        try {
+            
+            const response = await axios.get('/api/product/list');
+
+            if (response.data.success) {
+                setProducts(response.data.products)
+            } else {
+                console.log(response.data.message)
+            }
+
+        } catch (error: any) {
+            console.log(error)
+            toast.error(error.message)
+        }
 
     }
 
@@ -152,7 +176,8 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     }
 
     const value: AppContextType = {
-        router, products, adminToken, setAdminToken,
+        router, products, 
+        adminToken, setAdminToken, openEdit, setOpenEdit,
         login, setLogin, showLogin, setShowLogin,
         addToCart, getCartCount, cartItems, setCartItems
     };

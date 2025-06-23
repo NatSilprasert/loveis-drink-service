@@ -7,8 +7,9 @@ const productSchema = new mongoose.Schema({
     imageUrl: { type: String, require: true },
     category: { type: String, require: true },
     option: { type: Array, default: [] },
+    bestseller: { type: Boolean, default: false },
 })
 
-const Product = mongoose.model.product || mongoose.model('product', productSchema)
+const Product = mongoose.models.product || mongoose.model('product', productSchema)
 
 export default Product

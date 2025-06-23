@@ -8,6 +8,7 @@ import instagram from './ig1.png'
 import add_icon from './add_icon.svg'
 import order_icon from './order_icon.svg'
 import product_list_icon from './product_list_icon.svg'
+import upload_area from './upload_area.png'
 
 export const assets = {
     coffee,
@@ -19,6 +20,7 @@ export const assets = {
     loveis,
     add_icon,
     order_icon,
-    product_list_icon
+    product_list_icon,
+    upload_area,
 }
 

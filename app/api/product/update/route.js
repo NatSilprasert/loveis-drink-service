@@ -14,6 +14,7 @@ export async function POST(request) {
     try {
         const formData = await request.formData();
 
+        const id = formData.get('productId');
         const name = formData.get('name');
         const description = formData.get('description');
         const price = formData.get('price');
@@ -23,9 +24,8 @@ export async function POST(request) {
         const image = formData.get('banner'); // image เป็น Blob
 
         let imageUrl = "";
-        console.log(image)
 
-        if (image) {
+        if (image && typeof image !== "string") {
             // แปลง Blob เป็น Buffer
             const arrayBuffer = await image.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
@@ -44,18 +44,20 @@ export async function POST(request) {
             imageUrl = uploadResult.secure_url;
         }
 
-        await connectDB()
-        const newProduct = await Product.create({
+        const productData = {
             name,
             description,
             price: Number(price),
-            imageUrl,
+            image: imageUrl,
+            option: JSON.parse(option),
             category,
             bestseller,
-            option: JSON.parse(option)
-        })
+        }
+       
+        await connectDB()
+        const products = await Product.findByIdAndUpdate(id, {...productData})
 
-        return NextResponse.json({ success: true, message: 'Upload successful', newProduct })
+        return NextResponse.json({ success: true, message: 'Product Updated!'})
 
     } catch (error) {
         return NextResponse.json({ success: false, message: error.message})

@@ -7,6 +7,6 @@ const userSchema = new mongoose.Schema({
     orderData: { type: Array, default: [] },
 })
 
-const User = mongoose.model.user || mongoose.model('user', userSchema)
+const User = mongoose.models.user || mongoose.model('user', userSchema)
 
 export default User
