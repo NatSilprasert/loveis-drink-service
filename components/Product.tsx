@@ -30,9 +30,13 @@ const Product = () => {
             <div className='mt-6 mx-4 md:mx-8 lg:mx-54'>
                 <p className='font-semibold text-2xl mb-4'>{activeCategory}</p>
                 <section className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-                    {products.map((product, index) => (
-                        <ProductCard key={index} product={product}/>
-                    ))}
+                    {products.map((product, index) => {
+                        if (activeCategory === 'bestseller') {
+                            return product.bestseller ? <ProductCard key={index} product={product}/> : null;
+                        } else {
+                            return product.category === activeCategory ? <ProductCard key={index} product={product}/> : null;
+                        }
+                    })}
                 </section>
             </div>
             <hr className='mt-16 text-gray-400/50'/>

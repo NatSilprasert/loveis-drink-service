@@ -43,7 +43,7 @@ export async function POST(request)  {
 
         }
 
-        return NextResponse.json({success: true, message: 'เข้าสู่ระบบสำเร็จ!'})
+        return NextResponse.json({success: true, message: 'เข้าสู่ระบบสำเร็จ'})
 
     } catch (error) {
         return NextResponse.json({success: false, message: error.message})

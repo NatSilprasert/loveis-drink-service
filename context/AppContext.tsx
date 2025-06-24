@@ -17,7 +17,9 @@ interface AppContextType {
     openEdit: string;
     setOpenEdit: React.Dispatch<React.SetStateAction<string>>;
     addToCart: (drink: Drink) => void;
+    removeFromCart: (drink: Drink) => void;
     getCartCount: () => number;
+    getCartAmount: () => number;
     cartItems:  Drink[];
     setCartItems: React.Dispatch<React.SetStateAction<Drink[]>>;
     adminToken: string;
@@ -82,10 +84,11 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     const [openEdit, setOpenEdit] = useState<string>('');
 
     const [login, setLogin] = useState<Login>({seat: 'guess', round: 'กรอกที่นั่ง'});
-    const [showLogin, setShowLogin] = useState<boolean>(true);
+    const [showLogin, setShowLogin] = useState<boolean>(false);
     const [products, setProducts] = useState<Product[]>([]);
     const [cartItems, setCartItems] = useState<Drink[]>([]);
     const [orderItems, setOrderItems] = useState<Order[]>([]);
+    const [refreshUser, setRefreshUser] = useState(false);
 
     // Admin Token
     useEffect(() => {
@@ -99,11 +102,36 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
         localStorage.setItem('adminToken', adminToken);
     }, [adminToken]);
 
-    // Fetch Data
+    // User Token
+
+    useEffect(() => {
+        const loginStr = localStorage.getItem('login');
+        if (loginStr) {
+            setLogin(JSON.parse(loginStr));
+        } else {
+            setShowLogin(true)
+        }
+    }, []);
+
+    useEffect(() => {
+        if (login) {
+            localStorage.setItem('login', JSON.stringify(login));
+        }
+    }, [login]);
+
+    // Fetch Product Data
 
     useEffect(() => {
         fetchProductData();
     },[openEdit])
+
+    // Fetch User Data 
+
+    useEffect(() => {
+        fetchUserData();
+    }, [login, refreshUser])
+
+    // Fetch Function
 
     const fetchProductData = async () => {
 
@@ -128,14 +156,13 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
         try {
 
-            const response = await axios.post('/api/cart/get', { seat: login.seat, round: login.round });
+            const { seat, round } = login
+            const response = await axios.post('/api/user/get', { seat, round });
 
-            if (response.data.success) {
-              
+            if (response.data.success) {    
                 const { cartData, orderData } = response.data;
                 setCartItems(cartData)
                 setOrderItems(orderData)
-
             }
             
         } catch (error: any) {
@@ -147,24 +174,40 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
     // Cart Function
 
-    const addToCart = (drink: Drink) => { 
+    const addToCart = async (drink: Drink) => { 
 
-        setCartItems(prev => {
-            const found = prev.find(item =>
-                item.productId === drink.productId &&
-                item.option === drink.option &&
-                JSON.stringify(item.addon) === JSON.stringify(drink.addon) &&
-                item.request === drink.request
-            );
-            if (found) {
-                return prev.map(item => item === found ? { ...item, quantity: item.quantity + drink.quantity } : item);
+        try {
+            const { seat, round } = login;
+            const response = await axios.post('/api/cart/add', {seat, round, drink});
+            if (response.data.success) {
+                toast.success(response.data.message)
+                setRefreshUser(r => !r);
             } else {
-                return [...prev, drink];
+                toast.error(response.data.message)
             }
-        });
-    
-        toast.success('เพิ่มลงตะกร้าสำเร็จ')
-        console.log(cartItems)
+        } catch (error: any) {
+           console.log(error)
+           toast.error(error.message) 
+        }
+
+    }
+
+    const removeFromCart = async (drink: Drink) => {
+
+        try {
+            const { seat, round } = login;
+            const response = await axios.post('/api/cart/remove', {seat, round, drink});
+            if (response.data.success) {
+                toast.success(response.data.message)
+                setRefreshUser(r => !r);
+            } else {
+                toast.error(response.data.message)
+            }
+        } catch (error: any) {
+           console.log(error)
+           toast.error(error.message) 
+        }
+
     }
 
     const getCartCount = () => {
@@ -178,11 +221,29 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
     }
 
+    const getCartAmount = () => {
+
+        let totalAmount = 0;
+        for (const item of cartItems) {
+
+            const productData = products.find((product) => product._id === item.productId)
+
+            if (productData) {
+                totalAmount += item.quantity * productData.price;
+            }
+
+        }
+
+        return totalAmount
+
+    }
+
     const value: AppContextType = {
         router, products, 
         adminToken, setAdminToken, openEdit, setOpenEdit,
         login, setLogin, showLogin, setShowLogin,
-        addToCart, getCartCount, cartItems, setCartItems
+        addToCart, removeFromCart, getCartCount, getCartAmount,
+        cartItems, setCartItems
     };
 
     return (
