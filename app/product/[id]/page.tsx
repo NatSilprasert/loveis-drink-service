@@ -1,26 +1,40 @@
 "use client"
-
 import Navbar from '@/components/Navbar';
 import { useAppContext } from '@/context/AppContext';
 import { ArrowLeft, Check, SquareMinus, SquarePlus } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Drink } from '@/context/AppContext';
 
 const ProductItem = () => {
 
     const { id } = useParams();
-    const { router, addToCart } = useAppContext();
+    const { router, addToCart, products } = useAppContext();
 
+    const [productData, setProductData] = useState<any>(null);
     const [option, setOption] = useState<string>('');
     const [selectedTime, setSelectedTime] = useState<string>('ก่อนเริ่มการแสดง');
     const [addon, setAddon] = useState<string[]>([]);
     const [request, setRequest] = useState<string>("");
     const [quantity, setQuantity] = useState<number>(1);
 
+    useEffect(() => {
+        if (products && products.length > 0) {
+            fetchProductData();
+        }
+    }, [products]);
+
+    const fetchProductData = () => {
+        const found = products.find((item) => item._id === id);
+        if (found) {
+            setProductData(found);
+            setOption(found.option[0])
+        }
+      } 
+
     const drink: Drink = {
-        _id: typeof id === "string" ? id : "",
+        productId: String(id),
         option,
         selectedTime,
         addon,
@@ -44,13 +58,15 @@ const ProductItem = () => {
         );
     };
 
+    if (!productData) return <div>Loading...</div>;
+
     return (
         <div>
             <Navbar/>
             <div className='h-18 w-full'></div>
             <ArrowLeft onClick={() => router.push('/')} className='absolute mx-2 mt-2 text-white'/>
             <Image 
-                src="https://scontent.fbkk28-1.fna.fbcdn.net/v/t39.30808-6/484048727_643735608415427_3716085843766740198_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeE-iUfn5qT2hbJc0ILKMSJVjzvNmBxXlk6PO82YHFeWTrlQatRV-VOkc2QhCm4DAj3AXbqhcoKoBXhhrXfDd5GA&_nc_ohc=kj-671FcfAYQ7kNvwGYhQtZ&_nc_oc=AdkicRhz7Evp95f0knWHzSlmh2BqbVOW22ot_ZHrXyra4WFzdnBE6vmnNGo77tTUQw7RztNLZO3plnyJ5k__xazu&_nc_zt=23&_nc_ht=scontent.fbkk28-1.fna&_nc_gid=pN1qaGMIqKBPpyuEnvZxhg&oh=00_AfP3YsDRmrCwfzlvBIcLjnqxf11XPB_tFracV5RF13VPrw&oe=6858500C" 
+                src={productData.imageUrl}
                 alt="image" 
                 width={0} 
                 height={0} 
@@ -60,24 +76,22 @@ const ProductItem = () => {
             <section className='pt-3'>
                 <div className='px-4 md:px-8'>
                     <div className='flex justify-between items-center'>
-                        <p className='text-xl font-semibold'>Cappuccino</p>
-                        <p className='text-2xl font-semibold'>฿100</p>
+                        <p className='text-xl font-semibold'>{productData.name}</p>
+                        <p className='text-2xl font-semibold'>฿{productData.price}</p>
                     </div>
-                    <p className='text-xs mt-2 text-gray-400'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consectetur, enim!</p>
+                    <p className='text-xs mt-2 text-gray-400'>{productData.description}</p>
                 </div>
 
                 <hr className='mt-4 text-gray-400/50'/>
 
                 <div className='flex flex-col gap-3 mt-4 px-4 md:px-8'>
                     <p className='text-xl font-semibold'>ตัวเลือก</p>
-                    <div className='ml-1 flex items-center gap-2 text-gray-600'> 
-                        <div onClick={() => setOption('hot')} className={`${option === 'hot' ? 'border-7 border-primary' : 'border-2'} w-5 h-5 rounded-full border-gray-300`}></div>
-                        <p>ร้อน</p>
-                    </div>
-                    <div className='ml-1 flex items-center gap-2 text-gray-600'>
-                        <div onClick={() => setOption('cold')} className={`${option === 'cold' ? 'border-7 border-primary' : 'border-2'} w-5 h-5 rounded-full border-gray-300`}></div>
-                        <p>เย็น</p>
-                    </div>
+                    {productData.option.map((item: string,index: number) => (
+                        <div key={index} className='ml-1 flex items-center gap-2 text-gray-600'> 
+                            <div onClick={() => setOption(item)} className={`${option === item ? 'border-7 border-primary' : 'border-2'} w-5 h-5 rounded-full border-gray-300`}></div>
+                            <p>{item}</p>
+                        </div>
+                    ))}
                 </div>
                 <hr className='mt-4 text-gray-400/50'/>
 
@@ -189,7 +203,7 @@ const ProductItem = () => {
                 </div>
                 <div onClick={() => addToCart(drink)} className='md:max-w-1/3 flex flex-1 justify-between p-4 bg-primary text-white font-medium rounded-lg'>
                     <p>เพิ่มลงตะกร้า</p>
-                    <p>฿{quantity * 100}</p>
+                    <p>฿{quantity * productData.price}</p>
                 </div>
             </section>
         </div>

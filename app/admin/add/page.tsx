@@ -16,6 +16,7 @@ const Add = () => {
     const [category, setCategory] = useState<string>("coffee");
     const [option, setOption] = useState<string[]>([]);
     const [bestseller, setBestseller] = useState<boolean>(false);
+    const [signature, setSignature] = useState<boolean>(false);
 
     const onSubmitHandler = async (e: any) => {
        
@@ -32,6 +33,7 @@ const Add = () => {
             formData.append("category", category)
             formData.append("option", JSON.stringify(option))
             formData.append("bestseller", bestseller ? "true" : "false");
+            formData.append("signature", signature ? "true" : "false");
             if (banner) formData.append("banner", banner);
             
             const response = await axios.post("/api/product/add", formData)
@@ -45,6 +47,7 @@ const Add = () => {
                 setCategory('')
                 setOption([])
                 setBestseller(false)
+                setSignature(false)
                 setBanner(null) 
             } else {
                 toast.error(response.data.message)
@@ -105,17 +108,23 @@ const Add = () => {
             
             <p className=''>Product Option</p>
             <div className='flex gap-3'>
-                <div onClick={() => setOption(prev => prev.includes("hot") ? prev.filter(item => item != "hot") : [...prev, "hot"])}>
-                    <p className={`${option.includes("hot") ? "bg-pink-100" : "bg-slate-200"} px-3 py-1 cursor-pointer`}>hot</p>
+                <div onClick={() => setOption(prev => prev.includes("ร้อน") ? prev.filter(item => item != "ร้อน") : [...prev, "ร้อน"])}>
+                    <p className={`${option.includes("ร้อน") ? "bg-pink-100" : "bg-slate-200"} px-3 py-1 cursor-pointer`}>ร้อน</p>
                 </div>
-                <div onClick={() => setOption(prev => prev.includes("cold") ? prev.filter(item => item != "cold") : [...prev, "cold"])}>
-                    <p className={`${option.includes("cold") ? "bg-pink-100" : "bg-slate-200"} px-3 py-1 cursor-pointer`}>cold</p>
+                <div onClick={() => setOption(prev => prev.includes("เย็น") ? prev.filter(item => item != "เย็น") : [...prev, "เย็น"])}>
+                    <p className={`${option.includes("เย็น") ? "bg-pink-100" : "bg-slate-200"} px-3 py-1 cursor-pointer`}>เย็น</p>
                 </div> 
             </div>
 
-            <div className='flex gap-2 mt-2'>
-                <input onChange={() => setBestseller(prev => !prev)} checked={bestseller} type="checkbox" id='bestseller' />
-                <label className='cursor-pointer' htmlFor="bestseller">Bestseller?</label>
+            <div className='flex gap-6'>
+                <div className='flex gap-2 mt-2'>
+                    <input onChange={() => setBestseller(prev => !prev)} checked={bestseller} type="checkbox" id='bestseller' />
+                    <label className='cursor-pointer' htmlFor="bestseller">Bestseller?</label>
+                </div>
+                <div className='flex gap-2 mt-2'>
+                    <input onChange={() => setSignature(prev => !prev)} checked={signature} type="checkbox" id='signature' />
+                    <label className='cursor-pointer' htmlFor="signature">Signature?</label>
+                </div>
             </div>
 
             <button 

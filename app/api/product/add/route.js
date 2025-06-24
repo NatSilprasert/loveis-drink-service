@@ -20,10 +20,10 @@ export async function POST(request) {
         const option = formData.get('option');
         const category = formData.get('category');
         const bestseller = formData.get('bestseller');
+        const signature = formData.get('signature');
         const image = formData.get('banner'); // image เป็น Blob
 
         let imageUrl = "";
-        console.log(image)
 
         if (image) {
             // แปลง Blob เป็น Buffer
@@ -52,6 +52,7 @@ export async function POST(request) {
             imageUrl,
             category,
             bestseller,
+            signature,
             option: JSON.parse(option)
         })
 

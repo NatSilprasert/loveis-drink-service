@@ -7,7 +7,6 @@ export async function POST(request)  {
     try {
         await connectDB();
     
-        console.log(1)
         const body = await request.json();
         const { email, password } = body
 

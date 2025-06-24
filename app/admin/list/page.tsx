@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { SquarePen } from 'lucide-react';
 import Update from '@/components/admin/Update';
 import { useAppContext } from '@/context/AppContext';
+import { assets } from '@/assets/assets';
 
 const List = () => {
 
@@ -57,7 +58,7 @@ const List = () => {
                     products.map((item, index) => (
                       <div key={index}>
                         <div className='grid grid-cols-[1fr_1fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr] items-center gap-2 py-1 px-2 border border-gray-300 text-sm'>
-                            <img className='w-12' src={item.imageUrl} alt="" />
+                            <img className='w-12' src={item.imageUrl ? item.imageUrl : assets.upload_area} alt="" />
                             <p>{item.name}</p>
                             <p className='ml-2'>{item.category}</p>
                             <p>฿{item.price}</p>

@@ -1,7 +1,9 @@
 'use client'
 import { Drink, useAppContext } from '@/context/AppContext';
+import axios from 'axios';
 import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 const Login = () => {
 
@@ -10,13 +12,22 @@ const Login = () => {
     const [seat, setSeat] = useState<string>('');
     const [round, setRound] = useState<string>("28 มิ.ย. 13.00-16.00");
 
-    const fetchUserData = () => {
-        
-    }
+    const handleUserData = async () => {
 
-    const handleUserData = () => {
-        setLogin({seat, round})
-        setShowLogin(false);
+        try {
+            const response = await axios.post('/api/user/login', {seat, round})
+            if (response.data.success) {
+                toast.success(response.data.message)
+                setLogin({seat, round})
+                setShowLogin(false);
+            } else {
+                toast.error(response.data.message)
+            }
+        } catch (error: any) {
+            console.log(error)
+            toast.error(error.message)
+        }
+
     }
 
     useEffect(() => {
@@ -45,6 +56,16 @@ const Login = () => {
                     placeholder='เช่น A00'
                 />
                 <p className='text-3xl'>รอบละครเวที</p>
+                <select
+                     value={round}
+                     onChange={(e) => setRound(e.target.value)}
+                    className='border border-gray-400 p-2'
+                >
+                    <option value="28 มิ.ย. 13.00-16.00">รอบที่ 1 | วันที่ 28 มิ.ย. 13.00-16.00</option>
+                    <option value="28 มิ.ย. 18.00-21.00">รอบที่ 2 | วันที่ 28 มิ.ย. 18.00-21.00 </option>
+                    <option value="29 มิ.ย. 13.00-16.00">รอบที่ 3 | วันที่ 29 มิ.ย. 13.00-16.00</option>
+                    <option value="29 มิ.ย. 18.00-21.00">รอบที่ 4 | วันที่ 29 มิ.ย. 18.00-21.00</option>
+                </select>
 
                 <button onClick={handleUserData} className='w-full bg-primary p-2 rounded-xl text-white text-xl mt-2'>ยืนยัน</button>
                 <p className='text-xs text-red-500'>*กรุณาตรวจสอบรอบการแสดงและที่นั่งของลูกค้าอย่างละเอียดอีกครั้ง เพื่อให้แน่ใจว่าไม่มีการเปลี่ยนแปลงของที่นั่ง</p>

@@ -34,15 +34,18 @@ export interface Login {
 }
 
 export interface Product {
-    _id: string;
+    _id: any;
+    name: string;
     price: number;
-    image: string;
     description: string;
+    imageUrl: any;
+    category: string;
     option: string[];
-    addon: string[];
+    bestseller: boolean;
+    signature: boolean;
 }
 export interface Drink {
-    _id: string;
+    productId: string;
     option: string;
     selectedTime: string;
     addon: string[];
@@ -148,7 +151,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
         setCartItems(prev => {
             const found = prev.find(item =>
-                item._id === drink._id &&
+                item.productId === drink.productId &&
                 item.option === drink.option &&
                 JSON.stringify(item.addon) === JSON.stringify(drink.addon) &&
                 item.request === drink.request

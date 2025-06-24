@@ -21,6 +21,7 @@ export async function POST(request) {
         const option = formData.get('option');
         const category = formData.get('category');
         const bestseller = formData.get('bestseller');
+        const signature = formData.get('signature');
         const image = formData.get('banner'); // image เป็น Blob
 
         let imageUrl = "";
@@ -52,6 +53,7 @@ export async function POST(request) {
             option: JSON.parse(option),
             category,
             bestseller,
+            signature,
         }
        
         await connectDB()

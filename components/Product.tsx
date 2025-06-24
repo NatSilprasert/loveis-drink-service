@@ -1,14 +1,12 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ProductCard from './ProductCard';
 import { useAppContext } from '@/context/AppContext';
 
 const Product = () => {
 
-    const product = {
-        _id: 1
-    }
+    const { products } = useAppContext();
 
     const [activeCategory, setActiveCategory] = useState('bestseller');
 
@@ -32,10 +30,9 @@ const Product = () => {
             <div className='mt-6 mx-4 md:mx-8 lg:mx-54'>
                 <p className='font-semibold text-2xl mb-4'>{activeCategory}</p>
                 <section className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-                    <ProductCard/>
-                    <ProductCard/>
-                    <ProductCard/>
-                    <ProductCard/>
+                    {products.map((product, index) => (
+                        <ProductCard key={index} product={product}/>
+                    ))}
                 </section>
             </div>
             <hr className='mt-16 text-gray-400/50'/>
