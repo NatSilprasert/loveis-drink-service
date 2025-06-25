@@ -5,7 +5,7 @@ import { useAppContext } from '@/context/AppContext'
 import { ArrowLeft } from 'lucide-react'
 import React from 'react'
 
-const Order = () => {
+const Orders = () => {
 
   const { router } = useAppContext();
 
@@ -25,4 +25,4 @@ const Order = () => {
   )
 }
 
-export default Order
+export default Orders

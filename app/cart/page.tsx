@@ -2,13 +2,46 @@
 
 import Navbar from '@/components/Navbar'
 import { useAppContext } from '@/context/AppContext'
+import axios from 'axios'
 import { ArrowLeft, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
+import toast from 'react-hot-toast'
 
 const Cart = () => {
 
-    const { router, cartItems, products, getCartAmount, removeFromCart } = useAppContext();
+    const { router, login, cartItems, products, getCartAmount, removeFromCart } = useAppContext();
+
+    const paymentHandler = async () => {
+
+        const { seat, round } = login;
+        const amount = getCartAmount();
+        let orderItems = cartItems;
+
+        orderItems = orderItems.map((item) => {
+            const product = products.find(product => product._id === item.productId);
+            return {
+                ...item,
+                name: product ? product.name : "",
+                price: product ? product.price : 0,
+                imageUrl: product ? product.imageUrl : "",
+            };
+        })
+        
+        try {
+            const response = await axios.post('/api/order/payment', { seat, round, amount, orderItems })    
+            if (response.data.success) {
+                const {session_url} = response.data
+                window.location.replace(session_url)
+            } else {
+                toast.error(response.data.message)
+            }          
+        } catch (error: any) {
+            console.log(error)
+            toast.error(error.message)
+        }
+
+    }
 
     return (
         <div>
@@ -70,7 +103,7 @@ const Cart = () => {
                     <p>รวมทั้งหมด</p>
                     <p className='text-xl'>฿{getCartAmount()}</p>
                 </div>
-                <div className='w-full flex flex-1 justify-center items-center p-4 bg-primary text-white font-medium rounded-lg'>
+                <div onClick={paymentHandler} className='w-full flex flex-1 justify-center items-center p-4 bg-primary text-white font-medium rounded-lg'>
                     <p>ยืนยันคำสั่งซื้อ</p>
                 </div>
             </section>

@@ -22,7 +22,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
-    "react-social-icons": "^6.24.0"
+    "react-social-icons": "^6.24.0",
+    "stripe": "^18.2.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
