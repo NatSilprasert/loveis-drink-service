@@ -44,7 +44,7 @@ const Add = () => {
                 setName('')
                 setDescription('')
                 setPrice('')
-                setCategory('')
+                setCategory('coffee')
                 setOption([])
                 setBestseller(false)
                 setSignature(false)

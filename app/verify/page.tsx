@@ -13,20 +13,17 @@ const Verify = () => {
     const success = searchParams.get('success')
     const orderId = searchParams.get('orderId')
 
+    const { seat, round } = login;
+
     const verifyPayment = async () => {
         try {
 
-            if (!login) {
-                return null
-            }
-
-            const { seat, round } = login;
             const response = await axios.post('/api/order/verify', { seat, round, orderId, success })
 
             if (response.data.success) {
-                setCartItems([])
                 router.push('/orders')
                 toast.success(response.data.message)
+                setCartItems([])
             } else {
                 router.push('/cart')
                 toast.error(response.data.message)
@@ -39,8 +36,10 @@ const Verify = () => {
     }
 
     useEffect(() => {
-        verifyPayment()
-    }, [])
+        if (login.seat !== 'guest') {
+            verifyPayment();
+        }
+    }, [login]);
 
     return (
         <div className='min-h-screen flex flex-col items-center justify-center'>

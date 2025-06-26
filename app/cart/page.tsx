@@ -1,9 +1,10 @@
 "use client"
 
+import { assets } from '@/assets/assets'
 import Navbar from '@/components/Navbar'
 import { useAppContext } from '@/context/AppContext'
 import axios from 'axios'
-import { ArrowLeft, Trash2 } from 'lucide-react'
+import { ArrowLeft, ShoppingBasket, ShoppingCart, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 import toast from 'react-hot-toast'
@@ -23,7 +24,7 @@ const Cart = () => {
             return {
                 ...item,
                 name: product ? product.name : "",
-                price: product ? product.price : 0,
+                price: product ? item.totalPrice / item.quantity : 0,
                 imageUrl: product ? product.imageUrl : "",
             };
         })
@@ -54,7 +55,7 @@ const Cart = () => {
                 </div>
                 <p className='text-2xl font-semibold'>สรุปคำสั่งซื้อ</p>
 
-                {cartItems.map((item, index) => {
+                {cartItems.length !== 0 ? cartItems.map((item, index) => {
 
                     const productData = products.find((product) => product._id === item.productId)
 
@@ -74,18 +75,18 @@ const Cart = () => {
                                     <div className='flex flex-col'>
                                         <p className='font-medium'>{productData?.name} <span className='text-gray-500'>x {item.quantity}</span></p>
                                         <div className='text-xs text-gray-500'>
-                                            <p>เวลาที่ต้องการเครื่องดื่ม: {item.selectedTime}</p>
                                             <p>{item.option}</p>
                                             {item.addon.map((addon, index) => (
                                                 <p key={index}>+ {addon}</p>
                                             ))}
-                                            <p className='text-gray-400'>{item.request}</p>
+                                            <p className='text-gray-400'>{item.selectedTime}</p>
+                                            <p className='text-gray-300'>{item.request}</p>
                                         </div>
                                     </div>   
                                 </div>
 
                                 <div className='flex flex-col justify-between'>
-                                    <p className='font-medium'>฿{productData && productData.price * item.quantity}</p> 
+                                    <p className='font-medium'>฿{item.totalPrice}</p> 
                                     <div className='justify-end flex'>
                                         <Trash2 onClick={() => removeFromCart(item)} />     
                                     </div>
@@ -94,18 +95,31 @@ const Cart = () => {
                             <hr className='mt-4 text-gray-400/50'/>
                         </div>
                     )
-            })}
+            }): 
+            <div className='flex flex-col items-center justify-center h-140 text-gray-400'>
+                <Image src={assets.cart_empty} alt='' width={400} height={400}/>
+            </div>
+            }
                 
             </section>
 
-            <section className='fixed flex flex-col border-t border-gray-300 w-full bg-white pb-8 p-4 bottom-0 gap-3 justify-center items-center'>
-                <div className='w-full font-medium flex justify-between items-center'>
-                    <p>รวมทั้งหมด</p>
-                    <p className='text-xl'>฿{getCartAmount()}</p>
+            <section className='fixed border-t border-gray-300 w-full bg-white pb-8 p-4 bottom-0 justify-center items-center'>
+                {cartItems.length !== 0 
+                ? 
+                <div className='flex flex-col gap-3 justify-center items-center'>
+                    <div className='w-full font-medium flex justify-between items-center'>
+                        <p>รวมทั้งหมด</p>
+                        <p className='text-xl'>฿{getCartAmount()}</p>
+                    </div>
+                    <div onClick={paymentHandler} className='w-full flex flex-1 justify-center items-center p-4 bg-primary text-white font-medium rounded-lg'>
+                        <p>ยืนยันคำสั่งซื้อ</p>
+                    </div>
                 </div>
-                <div onClick={paymentHandler} className='w-full flex flex-1 justify-center items-center p-4 bg-primary text-white font-medium rounded-lg'>
-                    <p>ยืนยันคำสั่งซื้อ</p>
+                :
+                <div onClick={() => router.push('/')} className='w-full flex flex-1 justify-center items-center p-4 bg-primary text-white font-medium rounded-lg'>
+                    <p>เลือกสินค้าต่อ</p>
                 </div>
+                }
             </section>
         </div>
     )

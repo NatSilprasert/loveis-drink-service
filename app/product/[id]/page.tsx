@@ -18,6 +18,23 @@ const ProductItem = () => {
     const [addon, setAddon] = useState<string[]>([]);
     const [request, setRequest] = useState<string>("");
     const [quantity, setQuantity] = useState<number>(1);
+    const [bean, setBean] = useState('dark roast');
+
+    const addonPrices: { [key: string]: number } = {
+        "shot dark": 20,
+        "shot medium": 30,
+        "oat milk": 20,
+        "honey": 10,
+        "vanilla syrup": 10,
+        "dark roast": 0,
+        "medium roast": 10,
+    };
+    const getTotalPrice = () => {
+        if (!productData) return 0;
+        const basePrice = Number(productData.price) || 0;
+        const addonTotal = addon.reduce((sum, name) => sum + (addonPrices[name] || 0), 0);
+        return (basePrice + addonTotal) * quantity;
+    };
 
     useEffect(() => {
         if (products && products.length > 0) {
@@ -35,6 +52,7 @@ const ProductItem = () => {
 
     const drink: Drink = {
         productId: String(id),
+        totalPrice: getTotalPrice(),
         option,
         selectedTime,
         addon,
@@ -56,6 +74,14 @@ const ProductItem = () => {
                 ? prev.filter(item => item !== name)
                 : [...prev, name]
         );
+    };
+
+    const handleBeanSelect = (name: string) => {
+        setBean(name);
+        setAddon(prev => {
+            const filtered = prev.filter(item => item !== "dark roast" && item !== "medium roast");
+            return [...filtered, name];
+        });
     };
 
     if (!productData) return <div className='w-full min-h-screen flex items-center justify-center'>Loading...</div>;
@@ -95,6 +121,32 @@ const ProductItem = () => {
                 </div>
                 <hr className='mt-4 text-gray-400/50'/>
 
+                {!productData.signature && productData.category === 'coffee' &&
+                    <div>
+                        <section className='flex flex-col gap-3 mt-4 px-4 md:px-8'>
+                            <p className='text-xl font-semibold'>เมล็ดกาแฟ</p>
+                            <div className='ml-1 flex items-center gap-2 text-gray-600'> 
+                                <div
+                                    onClick={() => handleBeanSelect('dark roast')}
+                                    className={`${bean === 'dark roast' ? 'border-7 border-primary' : 'border-2'} w-5 h-5 rounded-full border-gray-300`}
+                                ></div>
+                                <p>dark roast</p>
+                            </div>
+                            <div className='ml-1 flex items-center gap-2 justify-between text-gray-600'>
+                                <div className='flex gap-2'>
+                                    <div
+                                        onClick={() => handleBeanSelect('medium roast')}
+                                        className={`${bean === 'medium roast' ? 'border-7 border-primary' : 'border-2'} w-5 h-5 rounded-full border-gray-300`}
+                                    ></div>
+                                    <p>medium roast</p>
+                                </div>
+                                <p>+10</p>
+                            </div>
+                        </section>
+                        <hr className='mt-4 text-gray-400/50'/>
+                    </div>
+                }
+
                 <section className='flex flex-col gap-3 mt-4 px-4 md:px-8'>
                     <p className='text-xl font-semibold'>เวลาที่ต้องการเครื่องดื่ม</p>
                     <div className='ml-1 flex items-center gap-2 text-gray-600'> 
@@ -108,73 +160,77 @@ const ProductItem = () => {
                 </section>
                 <hr className='mt-4 text-gray-400/50'/>
 
-                <div className='flex flex-col gap-3 mt-4 px-4 md:px-8'>
-                    <div className='flex justify-between'>
-                        <p className='text-xl font-semibold'> ตัวเลือกเพิ่มเติม</p>
-                        <p className='text-gray-400'>optional</p>
-                    </div>
-                    <div className='ml-1 flex justify-between text-gray-600'>  
-                        <div className='flex items-center gap-3'>
-                            <div
-                                onClick={() => handleAddonToggle('shot dark')}
-                                className={`flex items-center justify-center text-white w-5 h-5 rounded-sm border-2 border-gray-300 cursor-pointer ${addon.includes('shot dark') ? 'bg-primary border-primary' : ''}`}
-                            >
-                                <Check />
+`               {!productData.signature &&
+                    <div>
+                        <div className='flex flex-col gap-3 mt-4 px-4 md:px-8'>
+                            <div className='flex justify-between'>
+                                <p className='text-xl font-semibold'> ตัวเลือกเพิ่มเติม</p>
+                                <p className='text-gray-400'>optional</p>
                             </div>
-                            <p>shot dark</p>
-                        </div>
-                        <p>+20</p>
-                    </div>
-                    <div className='ml-1 flex justify-between text-gray-600'>  
-                        <div className='flex items-center gap-3'>
-                            <div
-                                onClick={() => handleAddonToggle('shot medium')}
-                                className={`flex items-center justify-center text-white w-5 h-5 rounded-sm border-2 border-gray-300 cursor-pointer ${addon.includes('shot medium') ? 'bg-primary border-primary' : ''}`}
-                            >
-                                <Check />
+                            <div className='ml-1 flex justify-between text-gray-600'>  
+                                <div className='flex items-center gap-3'>
+                                    <div
+                                        onClick={() => handleAddonToggle('shot dark')}
+                                        className={`flex items-center justify-center text-white w-5 h-5 rounded-sm border-2 border-gray-300 cursor-pointer ${addon.includes('shot dark') ? 'bg-primary border-primary' : ''}`}
+                                    >
+                                        <Check />
+                                    </div>
+                                    <p>shot dark</p>
+                                </div>
+                                <p>+20</p>
                             </div>
-                            <p>shot medium</p>
-                        </div>
-                        <p>+30</p>
-                    </div>
-                    <div className='ml-1 flex justify-between text-gray-600'>  
-                        <div className='flex items-center gap-3'>
-                            <div
-                                onClick={() => handleAddonToggle('oat milk')}
-                                className={`flex items-center justify-center text-white w-5 h-5 rounded-sm border-2 border-gray-300 cursor-pointer ${addon.includes('oat milk') ? 'bg-primary border-primary' : ''}`}
-                            >
-                                <Check />
+                            <div className='ml-1 flex justify-between text-gray-600'>  
+                                <div className='flex items-center gap-3'>
+                                    <div
+                                        onClick={() => handleAddonToggle('shot medium')}
+                                        className={`flex items-center justify-center text-white w-5 h-5 rounded-sm border-2 border-gray-300 cursor-pointer ${addon.includes('shot medium') ? 'bg-primary border-primary' : ''}`}
+                                    >
+                                        <Check />
+                                    </div>
+                                    <p>shot medium</p>
+                                </div>
+                                <p>+30</p>
                             </div>
-                            <p>oat milk</p>
-                        </div>
-                        <p>+20</p>
-                    </div>
-                    <div className='ml-1 flex justify-between text-gray-600'>  
-                        <div className='flex items-center gap-3'>
-                            <div
-                                onClick={() => handleAddonToggle('honey')}
-                                className={`flex items-center justify-center text-white w-5 h-5 rounded-sm border-2 border-gray-300 cursor-pointer ${addon.includes('honey') ? 'bg-primary border-primary' : ''}`}
-                            >
-                                <Check />
+                            <div className='ml-1 flex justify-between text-gray-600'>  
+                                <div className='flex items-center gap-3'>
+                                    <div
+                                        onClick={() => handleAddonToggle('oat milk')}
+                                        className={`flex items-center justify-center text-white w-5 h-5 rounded-sm border-2 border-gray-300 cursor-pointer ${addon.includes('oat milk') ? 'bg-primary border-primary' : ''}`}
+                                    >
+                                        <Check />
+                                    </div>
+                                    <p>oat milk</p>
+                                </div>
+                                <p>+20</p>
                             </div>
-                            <p>honey</p>
-                        </div>
-                        <p>+10</p>
-                    </div>
-                    <div className='ml-1 flex justify-between text-gray-600'>  
-                        <div className='flex items-center gap-3'>
-                            <div
-                                onClick={() => handleAddonToggle('vanilla syrup')}
-                                className={`flex items-center justify-center text-white w-5 h-5 rounded-sm border-2 border-gray-300 cursor-pointer ${addon.includes('vanilla syrup') ? 'bg-primary border-primary' : ''}`}
-                            >
-                                <Check />
+                            <div className='ml-1 flex justify-between text-gray-600'>  
+                                <div className='flex items-center gap-3'>
+                                    <div
+                                        onClick={() => handleAddonToggle('honey')}
+                                        className={`flex items-center justify-center text-white w-5 h-5 rounded-sm border-2 border-gray-300 cursor-pointer ${addon.includes('honey') ? 'bg-primary border-primary' : ''}`}
+                                    >
+                                        <Check />
+                                    </div>
+                                    <p>honey</p>
+                                </div>
+                                <p>+10</p>
                             </div>
-                            <p>vanilla syrup</p>
+                            <div className='ml-1 flex justify-between text-gray-600'>  
+                                <div className='flex items-center gap-3'>
+                                    <div
+                                        onClick={() => handleAddonToggle('vanilla syrup')}
+                                        className={`flex items-center justify-center text-white w-5 h-5 rounded-sm border-2 border-gray-300 cursor-pointer ${addon.includes('vanilla syrup') ? 'bg-primary border-primary' : ''}`}
+                                    >
+                                        <Check />
+                                    </div>
+                                    <p>vanilla syrup</p>
+                                </div>
+                                <p>+10</p>
+                            </div>
                         </div>
-                        <p>+10</p>
+                        <hr className='mt-4 text-gray-400/50'/>
                     </div>
-                </div>
-                <hr className='mt-4 text-gray-400/50'/>
+                }
             </section>
 
             <section className='p-4'>
@@ -203,7 +259,7 @@ const ProductItem = () => {
                 </div>
                 <div onClick={() => addToCart(drink)} className='md:max-w-1/3 flex flex-1 justify-between p-4 bg-primary text-white font-medium rounded-lg'>
                     <p>เพิ่มลงตะกร้า</p>
-                    <p>฿{quantity * productData.price}</p>
+                    <p>฿{getTotalPrice()}</p>
                 </div>
             </section>
         </div>

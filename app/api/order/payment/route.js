@@ -2,6 +2,7 @@ import connectDB from "../../../../config/db";
 import { NextResponse } from "next/server"
 import Order from "../../../../models/Order.js";
 import Stripe from "stripe";
+import User from "../../../../models/User.js";
 
 const stripe = new Stripe(process.env.STRIPE_SANDBOX_SECRET_KEY);
 
@@ -16,7 +17,7 @@ export async function POST(request) {
         const orderData = {
             seat,
             round,
-            orderItems,
+            allOrder: orderItems,
             amount,
             payment: false,
             date: Date.now()

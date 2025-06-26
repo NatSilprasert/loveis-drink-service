@@ -22,8 +22,11 @@ interface AppContextType {
     getCartAmount: () => number;
     cartItems:  Drink[];
     setCartItems: React.Dispatch<React.SetStateAction<Drink[]>>;
+    orderItems:  object[];
+    setOrderItems: React.Dispatch<React.SetStateAction<object[]>>;
     adminToken: string;
     setAdminToken: React.Dispatch<React.SetStateAction<string>>;
+    fetchUserData: () => void;
 }
 
 interface AppContextProviderProps {
@@ -48,20 +51,13 @@ export interface Product {
 }
 export interface Drink {
     productId: string;
+    totalPrice: number;
     option: string;
     selectedTime: string;
     addon: string[];
     request: string;
     quantity: number;
 }
-
-export interface Order {
-    _id: string;
-    seat: string;
-    round: string;
-    drink: Drink[];
-}
-
 
 // Function
 
@@ -83,11 +79,11 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     const [adminToken, setAdminToken] = useState<string>('');
     const [openEdit, setOpenEdit] = useState<string>('');
 
-    const [login, setLogin] = useState<Login>({seat: 'guess', round: 'กรอกที่นั่ง'});
+    const [login, setLogin] = useState<Login>({seat: 'guest', round: 'กรอกที่นั่ง'});
     const [showLogin, setShowLogin] = useState<boolean>(false);
     const [products, setProducts] = useState<Product[]>([]);
     const [cartItems, setCartItems] = useState<Drink[]>([]);
-    const [orderItems, setOrderItems] = useState<Order[]>([]);
+    const [orderItems, setOrderItems] = useState<object[]>([]);
     const [refreshUser, setRefreshUser] = useState(false);
 
     // Admin Token
@@ -114,7 +110,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     }, []);
 
     useEffect(() => {
-        if (login) {
+        if (login && login.seat !== 'guest') {
             localStorage.setItem('login', JSON.stringify(login));
         }
     }, [login]);
@@ -225,13 +221,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
         let totalAmount = 0;
         for (const item of cartItems) {
-
-            const productData = products.find((product) => product._id === item.productId)
-
-            if (productData) {
-                totalAmount += item.quantity * productData.price;
-            }
-
+            totalAmount += item.totalPrice;
         }
 
         return totalAmount
@@ -239,11 +229,11 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     }
 
     const value: AppContextType = {
-        router, products, 
+        router, products, fetchUserData,
         adminToken, setAdminToken, openEdit, setOpenEdit,
         login, setLogin, showLogin, setShowLogin,
         addToCart, removeFromCart, getCartCount, getCartAmount,
-        cartItems, setCartItems
+        cartItems, setCartItems, orderItems, setOrderItems
     };
 
     return (

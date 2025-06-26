@@ -7,7 +7,7 @@ import React from 'react'
 
 const Navbar = () => {
 
-    const { router, showLogin, setShowLogin, login } = useAppContext();
+    const { router, getCartCount, setShowLogin, login } = useAppContext();
     const pathname = usePathname();
 
     const handleClick = () => {
@@ -25,10 +25,17 @@ const Navbar = () => {
             </div>
 
             <div className='flex gap-3'>
-                <div onClick={() => router.push('/cart')} className='p-2 bg-white border-1 border-gray-400 rounded-full'>
+                <div onClick={() => router.push('/cart')} className='relative p-2 bg-white border-1 border-gray-400 rounded-full'>
                     <GlassWater/>
+                    {getCartCount() !== 0 &&
+                    <p 
+                        className='absolute right-[-4px] top-[-4px] w-4 text-center leading-4 bg-red-600 text-white aspect-square rounded-full text-[8px] font-bold font-sans'
+                    >
+                        {getCartCount()}
+                    </p>
+                    }
                 </div>
-                <div onClick={() => router.push('/order')} className='p-2 bg-white border-1 border-gray-400 rounded-full'>
+                <div onClick={() => router.push('/orders')} className='p-2 bg-white border-1 border-gray-400 rounded-full'>
                     <ReceiptText/>
                 </div>
             </div>

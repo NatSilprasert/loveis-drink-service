@@ -12,12 +12,18 @@ export async function POST(request) {
 
         try {
             if (success === "true") {
-                const user = await User.findOne({ seat, round });
-                if (user) {
-                    user.cartData = [];
-                    await user.save();
-                }
+
                 await Order.findByIdAndUpdate(orderId, { payment: true });
+                const { allOrder } = await Order.findById(orderId);
+
+                await User.findOneAndUpdate(
+                    { seat, round },
+                    {
+                        $set: { cartData: [] },
+                        $push: { orderData: { $each: allOrder } }
+                    }
+                );
+    
                 return NextResponse.json({ success: true, message: 'ชำระเงินเสร็จสิ้น' });
             } else {
                 await Order.findByIdAndDelete(orderId);

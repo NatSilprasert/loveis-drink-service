@@ -8,14 +8,14 @@ const Product = () => {
 
     const { products } = useAppContext();
 
-    const [activeCategory, setActiveCategory] = useState('bestseller');
+    const [activeCategory, setActiveCategory] = useState('signature');
 
     return (
         <div className='mt-4'>
             <div className='flex gap-8 justify-center'>
                 <div className='flex flex-col items-center'>
-                    <button onClick={() => setActiveCategory('bestseller')} className={`${activeCategory === 'bestseller' ? 'text-black font-semibold' : 'text-gray-500'} flex-1 text-center font-medium py-2`}>BEST SELLER</button>
-                    <hr className={`${activeCategory === 'bestseller' ? 'border-black' : 'border-white'} w-4/5 border-b`}/>
+                    <button onClick={() => setActiveCategory('signature')} className={`${activeCategory === 'signature' ? 'text-black font-semibold' : 'text-gray-500'} flex-1 text-center font-medium py-2`}>SIGNATURE</button>
+                    <hr className={`${activeCategory === 'signature' ? 'border-black' : 'border-white'} w-4/5 border-b`}/>
                 </div>
                 <div className='flex flex-col items-center'>
                     <button onClick={() => setActiveCategory('coffee')} className={`${activeCategory === 'coffee' ? 'text-black font-semibold' : 'text-gray-500'} flex-1 text-center font-medium py-2`}>COFFEE</button>
@@ -31,8 +31,8 @@ const Product = () => {
                 <p className='font-semibold text-2xl mb-4'>{activeCategory}</p>
                 <section className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
                     {products.map((product, index) => {
-                        if (activeCategory === 'bestseller') {
-                            return product.bestseller ? <ProductCard key={index} product={product}/> : null;
+                        if (activeCategory === 'signature') {
+                            return product.signature ? <ProductCard key={index} product={product}/> : null;
                         } else {
                             return product.category === activeCategory ? <ProductCard key={index} product={product}/> : null;
                         }
