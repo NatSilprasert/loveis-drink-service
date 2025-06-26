@@ -1,8 +1,8 @@
 # TCOS x LOVEiS Drink Service
 A Full Stack Order Drink Website using **Next.js**, **TypeScript**, **MongoDB** and **Stripe**.
 
-**User Panel:** https://loveis-drink-service.vercel.app/
-**Admin Panel:** https://loveis-drink-service.vercel.app/admin
+- **User Panel:** https://loveis-drink-service.vercel.app/
+- **Admin Panel:** https://loveis-drink-service.vercel.app/admin
 
 ## ⚙️ Tech Stack
 
